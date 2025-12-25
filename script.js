@@ -1331,6 +1331,7 @@
                 if(f.includes("BD")) freqIcons = "☀️ 🌙 (BD)";
                 else if(f.includes("TDS")) freqIcons = "☀️ 🌤️ 🌙 (TDS)";
                 else if(f.includes("OD")) freqIcons = "☀️ (OD)";
+                else if(f.includes("QD")) freqIcons = "☀️ ☀️ 🌤️ 🌙 (QD)";
                 else if(f.includes("HS")) freqIcons = "🌙 (HS)";
                 else if(f.includes("SOS")) freqIcons = "⚠️ (SOS)";
 
