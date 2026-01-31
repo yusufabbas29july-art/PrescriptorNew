@@ -1368,6 +1368,8 @@
         { name: "Pantoprazole + Levosulpiride Capsule", type: "Cap", category: "Gastro", tags: "gerd reflux" },
         { name: "Papaverine Injection 30 mg/ml", type: "Inj", category: "Cardiology", tags: "vasodilator" },
         { name: "Paracetamol Tablet 325 mg", type: "Tab", category: "Pain/Fever", tags: "fever pain" },
+        { name: "Paracetamol Tablet 500 mg", type: "Tab", category: "Pain/Fever", tags: "fever pain" },
+        { name: "Paracetamol Tablet 650 mg", type: "Tab", category: "Pain/Fever", tags: "fever pain" },
         { name: "Paracetamol Tablet 1000 mg", type: "Tab", category: "Pain/Fever", tags: "high fever pain" },
         { name: "Paracetamol Infusion 1 g/100ml", type: "Inj", category: "Pain/Fever", tags: "iv fever pain" },
         { name: "Paracetamol Suppository 80 mg", type: "Suppository", category: "Pain/Fever", tags: "infant fever" },
