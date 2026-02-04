@@ -1320,6 +1320,7 @@
         { name: "Omeprazole Capsule 10 mg", type: "Cap", category: "Gastro", tags: "acidity pediatric" },
         { name: "Omeprazole Capsule 40 mg", type: "Cap", category: "Gastro", tags: "acidity high" },
         { name: "Omeprazole Injection 40 mg", type: "Inj", category: "Gastro", tags: "acidity iv" },
+        { name: "Ondansetron Tablet 4 mg", type: "Tab", category: "Gastro", tags: "vomiting nausea" },
         { name: "Ondansetron Tablet 8 mg", type: "Tab", category: "Gastro", tags: "vomiting nausea" },
         { name: "Ondansetron MD Tablet 4 mg", type: "Tab", category: "Gastro", tags: "vomiting nausea mouth dissolve" },
         { name: "Ondansetron Syrup 2 mg/5ml", type: "Syr", category: "Gastro", tags: "pediatric vomiting" },
