@@ -1048,6 +1048,7 @@
         { name: "Levocetirizine Tablet 10 mg", type: "Tab", category: "Allergy", tags: "cold allergy itch" },
         { name: "Levocetirizine Syrup 2.5 mg/5ml", type: "Syr", category: "Allergy", tags: "pediatric allergy" },
         { name: "Levocetirizine + Montelukast Tablet", type: "Tab", category: "Respiratory", tags: "asthma allergy montair-lc" },
+        { name: "Levodropropizine + Chlorpheniramine Maleate syrup", type: "Syr", category: "Respiratory", tags: "asthma allergy Reswas" },
         { name: "Levofloxacin Tablet 250 mg", type: "Tab", category: "Antibiotic", tags: "infection respiratory" },
         { name: "Levofloxacin Tablet 500 mg", type: "Tab", category: "Antibiotic", tags: "infection respiratory" },
         { name: "Levofloxacin Tablet 750 mg", type: "Tab", category: "Antibiotic", tags: "infection severe" },
