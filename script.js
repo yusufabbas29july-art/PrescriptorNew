@@ -536,6 +536,7 @@
                 newPatientBtn: get("newPatientBtn"),
                 saveVisitBtn: get("saveVisitBtn"),
                 printBtn: get("printBtn"),
+                generateReferralBtn: get("generateReferralBtn"),
                 settingsBtn: get("clinicSettingsBtn"),
                 shortcutsBtn: get("shortcutsBtn"),
 
@@ -675,6 +676,7 @@
 
             // --- 7.2 Patient & Context ---
             if(d.newPatientBtn) d.newPatientBtn.onclick = () => this.toggleModal('newPatient', true);
+            if(d.generateReferralBtn) d.generateReferralBtn.onclick = () => this.handleReferralGeneration();
             if(d.saveNewPatientBtn) d.saveNewPatientBtn.onclick = () => this.registerNewPatient();
             if(d.closeNewPatientBtn) d.closeNewPatientBtn.onclick = () => this.toggleModal('newPatient', false);
             
@@ -1132,6 +1134,31 @@
             this.showToast("Historical Visit Loaded", "info");
         },
 
+      handleReferralGeneration() {
+      
+          const patient = this.state.currentPatient;
+          const visit = this.state.currentVisit;
+      
+          if (!patient || !visit) {
+              this.showToast("No patient or visit data available", "warning");
+              return;
+          }
+      
+          const referralWin = window.open("referral.html", "_blank");
+      
+          if (!referralWin) {
+              this.showToast("Popup blocked by browser!", "error");
+              return;
+          }
+      
+          referralWin.onload = () => {
+              referralWin.document.getElementById("patientName").value = patient.name || "";
+              referralWin.document.getElementById("age").value = patient.age || "";
+              referralWin.document.getElementById("sex").value = patient.sex || "";
+              referralWin.document.getElementById("uhid").value = patient.uhid || "";
+              referralWin.document.getElementById("mobile").value = patient.phone || "";
+          };
+      },
 
         /* ==========================================================================
            10.0 PRESCRIPTION (RX) COCKPIT ENGINE
@@ -1789,3 +1816,4 @@
     });
 
 })();
+
