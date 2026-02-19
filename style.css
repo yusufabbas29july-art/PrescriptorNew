@@ -2375,3 +2375,17 @@ body.dark-mode .dur-chip:hover {
         border-color: #ddd !important;
     }
 }
+
+/* ==========================================================================
+   17.0 NEW UPDATES : REFERRAL FORM
+   ========================================================================== */
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
