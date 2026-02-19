@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FIT Clinic – Inter-Hospital Government Referral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- =========================================================
+     GOVERNMENT-GRADE INTER-HOSPITAL REFERRAL DOCUMENT
+     Editable • Print-Perfect • PDF-Ready • Audit-Safe
+     ========================================================= -->
+
+<style>
+/* -------- GLOBAL DOCUMENT SETTINGS -------- */
+body{
+    margin:0;
+    padding:0;
+    background:#dfe6ef;
+    font-family:"Times New Roman", Georgia, serif;
+    color:#000;
+}
+
+.page{
+    width:210mm;
+    min-height:297mm;
+    margin:12mm auto;
+    background:#ffffff;
+    padding:18mm 20mm;
+    box-shadow:0 0 15px rgba(0,0,0,0.2);
+    position:relative;
+}
+
+/* -------- WATERMARK -------- */
+.page::before{
+    content:"FIT CLINIC – OFFICIAL MEDICAL REFERRAL";
+    position:absolute;
+    top:45%;
+    left:50%;
+    transform:translate(-50%,-50%) rotate(-30deg);
+    font-size:40px;
+    color:rgba(0,0,0,0.05);
+    white-space:nowrap;
+    pointer-events:none;
+}
+
+/* -------- HEADER -------- */
+.header{
+    display:flex;
+    align-items:center;
+    border-bottom:3px double #000;
+    padding-bottom:10px;
+}
+
+.header img{
+    width:70px;
+    height:70px;
+    margin-right:15px;
+}
+
+.header h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:1px;
+}
+
+.header h2{
+    margin:4px 0 0;
+    font-size:14px;
+    font-weight:normal;
+}
+
+.meta{
+    font-size:12px;
+    margin-top:4px;
+}
+
+/* -------- SECTIONS -------- */
+.section{margin-top:18px;}
+
+.section-title{
+    font-size:14px;
+    font-weight:bold;
+    text-transform:uppercase;
+    border-bottom:1px solid #000;
+    padding-bottom:3px;
+    margin-bottom:6px;
+}
+
+/* -------- TABLES -------- */
+.table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+.table th,.table td{
+    border:1px solid #000;
+    padding:6px;
+    vertical-align:top;
+}
+
+.table th{
+    background:#f1f1f1;
+    text-align:left;
+}
+
+input, textarea{
+    width:100%;
+    border:none;
+    outline:none;
+    font-family:inherit;
+    font-size:13px;
+    background:transparent;
+}
+
+textarea{resize:none;}
+
+.long{height:70px;}
+
+.checkbox{margin-right:14px;}
+
+/* -------- SIGNATURES -------- */
+.signature-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:25px;
+    font-size:13px;
+}
+
+.signature-box{width:45%;}
+
+.signature-line{
+    border-top:1px solid #000;
+    margin-top:30px;
+    padding-top:4px;
+}
+
+/* -------- FOOTER -------- */
+.footer{
+    margin-top:20px;
+    font-size:11px;
+    text-align:center;
+}
+
+/* -------- BUTTONS -------- */
+.actions{
+    margin:15px auto;
+    text-align:center;
+}
+
+.actions button{
+    padding:8px 16px;
+    margin:0 6px;
+    font-size:13px;
+    cursor:pointer;
+}
+
+@media print{
+    body{background:#fff;}
+    .page{box-shadow:none;margin:0;}
+    .actions{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="actions">
+    <button onclick="generateReferral()">Auto-Generate Referral No.</button>
+    <button onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+    <img src="logo.png" alt="FIT Clinic Logo">
+    <div>
+        <h1>FIT CLINIC</h1>
+        <h2>Inter-Hospital Patient Referral & Transfer Document</h2>
+        <div class="meta">Confidential Medical Record • Government-Grade Format</div>
+    </div>
+</div>
+
+<!-- I. REFERRAL IDENTIFICATION -->
+<div class="section">
+<div class="section-title">I. Referral Identification</div>
+<table class="table">
+<tr><th>Date</th><td><input type="date"></td><th>Time</th><td><input type="time"></td></tr>
+<tr><th>Referral Number</th><td colspan="3"><input id="refNo"></td></tr>
+<tr><th>Urgency</th><td colspan="3">
+<span class="checkbox">☐ Routine</span><span class="checkbox">☐ Urgent</span><span class="checkbox">☐ Emergency</span>
+</td></tr>
+</table>
+</div>
+
+<!-- II. REFERRING AUTHORITY -->
+<div class="section">
+<div class="section-title">II. Referring Medical Authority</div>
+<table class="table">
+<tr><th>Doctor Name</th><td colspan="3"><input></td></tr>
+<tr><th>Qualification</th><td><input></td><th>Registration No.</th><td><input></td></tr>
+<tr><th>Institution / Clinic</th><td colspan="3"><input></td></tr>
+<tr><th>Department</th><td><input></td><th>Contact</th><td><input></td></tr>
+</table>
+</div>
+
+<!-- III. RECEIVING HOSPITAL -->
+<div class="section">
+<div class="section-title">III. Receiving Hospital / Specialist</div>
+<table class="table">
+<tr><th>Hospital / Medical College Name</th><td colspan="3"><input></td></tr>
+<tr><th>Department / Specialty</th><td><input></td><th>Consultant (if known)</th><td><input></td></tr>
+<tr><th>Hospital Address</th><td colspan="3"><input></td></tr>
+<tr><th>Referral Desk Contact</th><td colspan="3"><input></td></tr>
+</table>
+</div>
+
+<!-- IV. PATIENT DETAILS -->
+<div class="section">
+<div class="section-title">IV. Patient Identification</div>
+<table class="table">
+<tr><th>Patient Name</th><td colspan="3"><input></td></tr>
+<tr><th>Age</th><td><input></td><th>Sex</th><td><input></td></tr>
+<tr><th>UHID / ID</th><td><input></td><th>Mobile</th><td><input></td></tr>
+<tr><th>Address</th><td colspan="3"><input></td></tr>
+</table>
+</div>
+
+<!-- V. CLINICAL SUMMARY -->
+<div class="section">
+<div class="section-title">V. Clinical Summary</div>
+<table class="table">
+<tr><th>Chief Complaints</th><td><textarea class="long"></textarea></td></tr>
+<tr><th>History of Present Illness</th><td><textarea class="long"></textarea></td></tr>
+</table>
+</div>
+
+<!-- VI. EXAMINATION -->
+<div class="section">
+<div class="section-title">VI. Examination & Vitals</div>
+<table class="table">
+<tr><th>Pulse</th><td><input></td><th>BP</th><td><input></td><th>SpO₂</th><td><input></td></tr>
+<tr><th>Systemic Examination</th><td colspan="5"><textarea class="long"></textarea></td></tr>
+</table>
+</div>
+
+<!-- VII. INVESTIGATIONS -->
+<div class="section">
+<div class="section-title">VII. Investigations & Reports</div>
+<table class="table">
+<tr><td><textarea class="long"></textarea></td></tr>
+</table>
+</div>
+
+<!-- VIII. DIAGNOSIS -->
+<div class="section">
+<div class="section-title">VIII. Provisional Diagnosis</div>
+<table class="table"><tr><td><textarea class="long"></textarea></td></tr></table>
+</div>
+
+<!-- IX. PURPOSE -->
+<div class="section">
+<div class="section-title">IX. Purpose of Referral</div>
+<table class="table">
+<tr><td>
+☐ Specialist Opinion ☐ Advanced Investigation ☐ Surgical Care ☐ ICU / Emergency ☐ Continuation of Care
+</td></tr>
+<tr><th>Specific Request</th><td><textarea class="long"></textarea></td></tr>
+</table>
+</div>
+
+<!-- X. DECLARATION -->
+<div class="section">
+<div class="section-title">X. Declaration</div>
+<p style="font-size:13px;">I certify that the above information is accurate and the patient / attendant has been informed regarding this inter-hospital referral.</p>
+<div class="signature-row">
+<div class="signature-box"><div class="signature-line">Referring Doctor Signature</div></div>
+<div class="signature-box"><div class="signature-line">Date & Official Stamp</div></div>
+</div>
+</div>
+
+<!-- XI. RECEIVING NOTES -->
+<div class="section">
+<div class="section-title">XI. Receiving Hospital Use Only</div>
+<table class="table">
+<tr><th>Date & Time Received</th><td><input></td></tr>
+<tr><th>Receiving Doctor / Unit</th><td><input></td></tr>
+<tr><th>Assessment & Plan</th><td><textarea class="long"></textarea></td></tr>
+</table>
+</div>
+
+<div class="footer">
+Official confidential medical document • Valid for medico-legal & audit purposes
+</div>
+
+</div>
+
+<script>
+function generateReferral(){
+    const d=new Date();
+    const ref=`FIT-${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
+    document.getElementById('refNo').value=ref;
+}
+</script>
+
+</body>
+</html>
