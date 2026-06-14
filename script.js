@@ -1369,7 +1369,7 @@
                             ${formClass !== 'def' ? `<span class="form-badge ${formClass}">${item.drug.split('.')[0]}</span>` : ''}
                             <span class="med-name">${Utils.escapeHtml(drugDisplay)}</span>
                         </div>
-                        ${item.remarks ? `<div class="med-remarks">📝 ${Utils.escapeHtml(item.remarks)}</div>` : ''}
+                        ${item.remarks ? `<div class="med-remarks"> ${Utils.escapeHtml(item.remarks)}</div>` : ''}
                     </td>
                     <td style="font-weight:600; color:#334155;">${Utils.escapeHtml(item.dose)}</td>
                     <td><span class="time-badge">${freqIcons}</span></td>
