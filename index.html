@@ -53,14 +53,14 @@
     </div>
 
     <div class="top-right">
-      <button id="themeToggleBtn" class="btn btn-icon" title="Toggle Dark Mode">🌙</button>
-      <button id="shortcutsBtn" class="btn btn-icon" title="Shortcuts">⌨️</button>
+      <button id="themeToggleBtn" class="btn btn-icon" title="Toggle Dark Mode"></button>
+      <button id="shortcutsBtn" class="btn btn-icon" title="Shortcuts"></button>
       <div class="separator"></div>
       <button id="newPatientBtn" class="btn btn-primary"><span>+</span> New</button>
-      <button id="saveVisitBtn" class="btn btn-success"><span>💾</span> Save</button>
-      <button id="printBtn" class="btn btn-dark"><span>🖨️</span> Print</button>
-      <button id="generateReferralBtn" class="btn btn-warning"><span>📄</span> Referral</button>
-      <button id="clinicSettingsBtn" class="btn btn-icon"><span>⚙️</span></button>
+      <button id="saveVisitBtn" class="btn btn-success"><span></span> Save</button>
+      <button id="printBtn" class="btn btn-dark"><span></span> Print</button>
+      <button id="generateReferralBtn" class="btn btn-warning"><span></span> Referral</button>
+      <button id="clinicSettingsBtn" class="btn btn-icon"><span></span></button>
     </div>
   </header>
 
@@ -80,8 +80,8 @@
       </div>
     </div>
     <div class="context-right">
-       <button id="calcBtn" class="btn btn-ghost btn-small">🧮 BMI Calc</button>
-       <button id="openHistoryBtn" class="btn btn-ghost btn-small">🕒 History</button>
+       <button id="calcBtn" class="btn btn-ghost btn-small">BMI Calc</button>
+       <button id="openHistoryBtn" class="btn btn-ghost btn-small">History</button>
     </div>
   </div>
 
@@ -103,7 +103,7 @@
         </section>
         <hr class="divider"/>
         <section class="form-section">
-          <label class="section-label" style="color:#dc2626;">Allergies ⚠️</label>
+          <label class="section-label" style="color:#dc2626;">Allergies</label>
           <textarea id="snapshotAllergies" class="warning-border" placeholder="Drug allergies..."></textarea>
         </section>
         <section class="form-section">
@@ -120,7 +120,7 @@
           <input type="date" id="visitDate" />
         </div>
         <button id="aiSuggestBtn" class="btn btn-magic-ghost" style="margin-left:auto;">
-           ✨ AI Suggest <span id="aiLoading" class="ai-loader is-hidden"></span>
+           AI Suggest <span id="aiLoading" class="ai-loader is-hidden"></span>
         </button>
       </div>
 
@@ -146,10 +146,10 @@
           <div id="tab-exam" class="tab-content">
             <div class="smart-input-wrapper">
               <div class="macro-bar">
-                 <button class="macro-btn" onclick="App.insertMacro('examText', 'Chest Clear. S1 S2 Normal.')">🫁 Normal Chest</button>
-                 <button class="macro-btn" onclick="App.insertMacro('examText', 'Throat congested. Tonsils enlarged.')">👅 Sore Throat</button>
-                 <button class="macro-btn" onclick="App.insertMacro('examText', 'P/A: Soft, non-tender. Bowel sounds present.')">✋ Normal Abd</button>
-                 <button class="macro-btn" onclick="App.insertMacro('examText', 'CNS: Conscious, Oriented. No focal deficit.')">🧠 Normal CNS</button>
+                 <button class="macro-btn" onclick="App.insertMacro('examText', 'Chest Clear. S1 S2 Normal.')"> Normal Chest</button>
+                 <button class="macro-btn" onclick="App.insertMacro('examText', 'Throat congested. Tonsils enlarged.')"> Sore Throat</button>
+                 <button class="macro-btn" onclick="App.insertMacro('examText', 'P/A: Soft, non-tender. Bowel sounds present.')"> Normal Abd</button>
+                 <button class="macro-btn" onclick="App.insertMacro('examText', 'CNS: Conscious, Oriented. No focal deficit.')">  Normal CNS</button>
               </div>
               <textarea id="examText" placeholder="On Examination..."></textarea>
               <button class="mic-btn" onclick="App.toggleDictation('examText', this)">🎙️</button>
@@ -175,7 +175,7 @@
                 
                 <div id="rxSafetyBanner" class="rx-safety-banner">
                     <div class="banner-content">
-                        <span class="banner-icon">🤧</span>
+                        <span class="banner-icon"></span>
                         <div class="banner-text">
                             <span class="banner-title">Allergy Alert</span>
                             <span id="rxAllergyText" class="banner-detail"></span>
@@ -187,19 +187,19 @@
                 <div class="rx-input-deck">
                     <div class="rx-quick-chips-row">
                         <span class="chip-label">Form:</span>
-                        <button class="chip-btn" onclick="App.setRxForm('Tab.')">💊 Tab</button>
-                        <button class="chip-btn" onclick="App.setRxForm('Cap.')">💊 Cap</button>
-                        <button class="chip-btn" onclick="App.setRxForm('Syr.')">🥄 Syr</button>
-                        <button class="chip-btn" onclick="App.setRxForm('Inj.')">💉 Inj</button>
-                        <button class="chip-btn" onclick="App.setRxForm('Oint.')">🧴 Oint</button>
-                        <button class="chip-btn" onclick="App.setRxForm('Drops')">💧 Drops</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Tab.')"> Tab</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Cap.')"> Cap</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Syr.')"> Syr</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Inj.')"> Inj</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Oint.')"> Oint</button>
+                        <button class="chip-btn" onclick="App.setRxForm('Drops')"> Drops</button>
                     </div>
 
                     <div class="rx-grid-row">
                         <div class="input-group drug-group">
                             <label>Medicine Name</label>
                             <div class="input-wrapper">
-                                <span class="input-icon">🔍</span>
+                                <span class="input-icon"></span>
                                 <input id="rxDrugName" placeholder="Search brand or generic..." autocomplete="off" />
                             </div>
                             <div id="drugSuggestions" class="suggestions-dropdown" aria-hidden="true"></div>
@@ -233,7 +233,7 @@
                             </div>
                         </div>
                         <div class="rx-action-group">
-                            <span id="editingIndicator" class="editing-badge is-hidden">✏️ Editing</span>
+                            <span id="editingIndicator" class="editing-badge is-hidden"> Editing</span>
                             <button id="addRxBtn" class="btn btn-primary btn-add-rx">
                                 <span class="plus-icon">+</span> <span id="addRxBtnText">Add Med</span>
                             </button>
@@ -247,7 +247,7 @@
                     <tbody id="rxTableBody"></tbody>
                   </table>
                   <div id="rxEmptyState" class="rx-empty">
-                      <div class="empty-icon">💊</div>
+                      <div class="empty-icon"></div>
                       <div class="empty-text">Prescription is empty</div>
                       <div class="empty-sub">Search above to add medicines</div>
                   </div>
