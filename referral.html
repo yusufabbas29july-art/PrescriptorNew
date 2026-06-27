@@ -1,307 +1,991 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>FIT Clinic – Inter-Hospital Government Referral</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Referral System</title>
+    
+    <!-- Using professional web fonts: Inter for UI, Merriweather for Document -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           CSS VARIABLES & GLOBAL RESET
+           ========================================================================== */
+        :root {
+            --ui-bg: #f4f6f8;
+            --ui-sidebar: #1e293b;
+            --ui-sidebar-hover: #334155;
+            --ui-card: #ffffff;
+            --ui-text: #334155;
+            --ui-text-light: #64748b;
+            --ui-border: #e2e8f0;
+            --ui-primary: #2563eb;
+            --ui-primary-hover: #1d4ed8;
+            --ui-success: #16a34a;
+            --ui-success-hover: #15803d;
+            --ui-danger: #dc2626;
+            
+            --doc-font: 'Merriweather', Georgia, serif;
+            --ui-font: 'Inter', system-ui, sans-serif;
+        }
 
-<!-- =========================================================
-     GOVERNMENT-GRADE INTER-HOSPITAL REFERRAL DOCUMENT
-     Editable • Print-Perfect • PDF-Ready • Audit-Safe
-     ========================================================= -->
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--ui-font);
+            background-color: var(--ui-bg);
+            color: var(--ui-text);
+            overflow-x: hidden;
+        }
 
-<style>
-/* -------- GLOBAL DOCUMENT SETTINGS -------- */
-body{
-    margin:0;
-    padding:0;
-    background:#dfe6ef;
-    font-family:"Times New Roman", Georgia, serif;
-    color:#000;
-}
+        /* ==========================================================================
+           1. CLINICAL DASHBOARD UI (NON-PRINTABLE)
+           ========================================================================== */
+        #app-interface {
+            display: flex;
+            min-height: 100vh;
+        }
 
-.page{
-    width:210mm;
-    min-height:297mm;
-    margin:12mm auto;
-    background:#ffffff;
-    padding:18mm 20mm;
-    box-shadow:0 0 15px rgba(0,0,0,0.2);
-    position:relative;
-}
+        /* SIDEBAR SETTINGS */
+        .sidebar {
+            width: 320px;
+            background-color: var(--ui-sidebar);
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
 
-/* -------- WATERMARK -------- */
-.page::before{
-    content:"FIT CLINIC – OFFICIAL MEDICAL REFERRAL";
-    position:absolute;
-    top:45%;
-    left:50%;
-    transform:translate(-50%,-50%) rotate(-30deg);
-    font-size:40px;
-    color:rgba(0,0,0,0.05);
-    white-space:nowrap;
-    pointer-events:none;
-}
+        .sidebar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--ui-sidebar-hover);
+            padding-bottom: 16px;
+        }
 
-/* -------- HEADER -------- */
-.header{
-    display:flex;
-    align-items:center;
-    border-bottom:3px double #000;
-    padding-bottom:10px;
-}
+        .settings-group {
+            margin-bottom: 24px;
+        }
 
-.header img{
-    width:70px;
-    height:70px;
-    margin-right:15px;
-}
+        .settings-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
 
-.header h1{
-    margin:0;
-    font-size:22px;
-    letter-spacing:1px;
-}
+        .settings-group input[type="text"],
+        .settings-group input[type="file"] {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .settings-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--ui-primary);
+            background: rgba(255,255,255,0.15);
+        }
 
-.header h2{
-    margin:4px 0 0;
-    font-size:14px;
-    font-weight:normal;
-}
+        .logo-preview-container {
+            margin-top: 10px;
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-.meta{
-    font-size:12px;
-    margin-top:4px;
-}
+        .logo-preview-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
 
-/* -------- SECTIONS -------- */
-.section{margin-top:18px;}
+        /* MAIN FORM AREA */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
 
-.section-title{
-    font-size:14px;
-    font-weight:bold;
-    text-transform:uppercase;
-    border-bottom:1px solid #000;
-    padding-bottom:3px;
-    margin-bottom:6px;
-}
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--ui-card);
+            padding: 20px 32px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
 
-/* -------- TABLES -------- */
-.table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:13px;
-}
+        .header-actions h1 {
+            font-size: 24px;
+            color: var(--ui-text);
+        }
 
-.table th,.table td{
-    border:1px solid #000;
-    padding:6px;
-    vertical-align:top;
-}
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.table th{
-    background:#f1f1f1;
-    text-align:left;
-}
+        .btn-primary { background: var(--ui-primary); color: #fff; }
+        .btn-primary:hover { background: var(--ui-primary-hover); }
+        .btn-success { background: var(--ui-success); color: #fff; }
+        .btn-success:hover { background: var(--ui-success-hover); }
+        .btn-outline { background: transparent; border: 1px solid var(--ui-border); color: var(--ui-text); }
+        .btn-outline:hover { background: var(--ui-bg); }
 
-input, textarea{
-    width:100%;
-    border:none;
-    outline:none;
-    font-family:inherit;
-    font-size:13px;
-    background:transparent;
-}
+        /* FORM CARDS */
+        .form-card {
+            background: var(--ui-card);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
 
-textarea{resize:none;}
+        .card-header {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--ui-border);
+            padding: 16px 24px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #0f172a;
+        }
 
-.long{height:70px;}
+        .card-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
 
-.checkbox{margin-right:14px;}
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-/* -------- SIGNATURES -------- */
-.signature-row{
-    display:flex;
-    justify-content:space-between;
-    margin-top:25px;
-    font-size:13px;
-}
+        /* Grid Spans */
+        .col-12 { grid-column: span 12; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+        .col-3 { grid-column: span 3; }
+        .col-2 { grid-column: span 2; }
 
-.signature-box{width:45%;}
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ui-text-light);
+        }
 
-.signature-line{
-    border-top:1px solid #000;
-    margin-top:30px;
-    padding-top:4px;
-}
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--ui-border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--ui-text);
+            background: #fff;
+            transition: border-color 0.2s;
+        }
 
-/* -------- FOOTER -------- */
-.footer{
-    margin-top:20px;
-    font-size:11px;
-    text-align:center;
-}
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--ui-primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
 
-/* -------- BUTTONS -------- */
-.actions{
-    margin:15px auto;
-    text-align:center;
-}
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
 
-.actions button{
-    padding:8px 16px;
-    margin:0 6px;
-    font-size:13px;
-    cursor:pointer;
-}
+        .gcs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--ui-border);
+        }
 
-@media print{
-    body{background:#fff;}
-    .page{box-shadow:none;margin:0;}
-    .actions{display:none;}
-}
-</style>
+        /* ==========================================================================
+           2. DOCUMENT PREVIEW / PRINT ENGINE 
+           ========================================================================== */
+        #document-preview {
+            display: none; /* Hidden until generated */
+            background: #cbd5e1;
+            padding: 40px 0;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        .preview-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* THE A4 PAPER */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 15mm 20mm;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            font-family: var(--doc-font);
+            color: #000;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Print Typography & Structure */
+        .doc-header {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 3px double #000;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .doc-logo-area {
+            width: 90px;
+            height: 90px;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doc-logo-area img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .doc-title-area {
+            flex: 1;
+        }
+
+        .doc-title-area h1 {
+            font-size: 26px;
+            text-transform: uppercase;
+            margin: 0 0 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .doc-title-area h2 {
+            font-size: 14px;
+            margin: 0 0 5px 0;
+            font-weight: normal;
+        }
+
+        .doc-meta {
+            font-size: 11px;
+            color: #333;
+            font-family: sans-serif;
+            background: #f4f4f4;
+            display: inline-block;
+            padding: 3px 8px;
+            border: 1px solid #ddd;
+        }
+
+        .doc-section {
+            margin-bottom: 12px;
+        }
+
+        .doc-section-title {
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #eaeaea;
+            border: 1px solid #000;
+            border-bottom: none;
+            padding: 4px 8px;
+            margin: 0;
+        }
+
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .doc-table th, .doc-table td {
+            border: 1px solid #000;
+            padding: 5px 8px;
+            vertical-align: top;
+        }
+
+        .doc-table th {
+            background: #fafafa;
+            text-align: left;
+            width: 20%;
+            font-weight: bold;
+        }
+
+        .val-span {
+            font-weight: normal;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .empty-val {
+            color: transparent;
+        }
+
+        .doc-signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            page-break-inside: avoid;
+        }
+
+        .sig-block {
+            width: 40%;
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1px solid #000;
+            margin-top: 50px;
+            padding-top: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .doc-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 10px;
+            font-family: sans-serif;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+        }
+
+        /* ==========================================================================
+           3. PRINT MEDIA QUERIES
+           ========================================================================== */
+        @media print {
+            body { background: #fff; }
+            #app-interface { display: none !important; }
+            .preview-controls { display: none !important; }
+            #document-preview {
+                display: block !important;
+                background: none;
+                padding: 0;
+            }
+            .a4-page {
+                box-shadow: none;
+                margin: 0;
+                padding: 10mm;
+                width: 100%;
+            }
+            .doc-section-title {
+                background: #e5e5e5 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .doc-table th {
+                background: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            /* Force page breaks cleanly */
+            .doc-section { page-break-inside: avoid; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="actions">
-    <button onclick="generateReferral()">Auto-Generate Referral No.</button>
-    <button onclick="window.print()">Print / Save as PDF</button>
-</div>
+    <!-- ==========================================================================
+         APPLICATION INTERFACE (DATA ENTRY)
+         ========================================================================== -->
+    <div id="app-interface">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">Referral Workspace</div>
+            
+            <div class="settings-group">
+                <label>Institution Configuration</label>
+                <input type="text" id="ui-hosp-name" value="REGIONAL METROPOLITAN HOSPITAL" placeholder="Hospital Name">
+            </div>
 
-<div class="page">
+            <div class="settings-group">
+                <label>Institution Address</label>
+                <input type="text" id="ui-hosp-address" value="123 Medical Enclave, Health District" placeholder="Address">
+            </div>
 
-<!-- HEADER -->
-<div class="header">
-    <img src="logo.png" alt="FIT Clinic Logo">
-    <div>
-        <h1>FIT CLINIC</h1>
-        <h2>Inter-Hospital Patient Referral & Transfer Document</h2>
-        <div class="meta">Confidential Medical Record • Government-Grade Format</div>
+            <div class="settings-group">
+                <label>Default Referring Doctor</label>
+                <input type="text" id="ui-doc-name" value="Dr. J. Smith, MD" placeholder="Doctor's Name">
+                <input type="text" id="ui-doc-reg" value="Reg No: 88472-M" placeholder="Registration No." style="margin-top:8px;">
+            </div>
+
+            <div class="settings-group">
+                <label>Upload Official Logo</label>
+                <input type="file" id="logo-upload" accept="image/*">
+                <div class="logo-preview-container">
+                    <img id="ui-logo-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' x='15' fill='%23fff' font-family='sans-serif'>No Logo</text></svg>">
+                </div>
+            </div>
+            
+            <div style="flex-grow:1;"></div>
+            <div style="font-size:11px; color:#64748b; text-align:center;">V 2.4.1 Enterprise Build</div>
+        </aside>
+
+        <!-- MAIN WORKSPACE -->
+        <main class="main-content">
+            
+            <div class="header-actions">
+                <div>
+                    <h1>New Patient Transfer Document</h1>
+                    <p style="color:var(--ui-text-light); font-size:14px; margin-top:4px;">Fill all mandatory clinical details before generating the document.</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline" onclick="generateRefNo()">Generate Ref No.</button>
+                    <button class="btn btn-primary" onclick="buildDocument()">Review & Generate Document</button>
+                </div>
+            </div>
+
+            <form id="referral-form" onsubmit="event.preventDefault();">
+                
+                <!-- IDENTIFICATION -->
+                <div class="form-card">
+                    <div class="card-header">1. Administrative Details</div>
+                    <div class="card-body">
+                        <div class="form-group col-3">
+                            <label>Referral Number</label>
+                            <input type="text" id="in-ref-no" placeholder="Click 'Generate' above">
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Date</label>
+                            <input type="date" id="in-date">
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Time</label>
+                            <input type="time" id="in-time">
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Urgency Level</label>
+                            <select id="in-urgency">
+                                <option>Routine / Elective</option>
+                                <option>Urgent (Within 24hrs)</option>
+                                <option style="color:red; font-weight:bold;">EMERGENCY (Immediate)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PATIENT DEMOGRAPHICS -->
+                <div class="form-card">
+                    <div class="card-header">2. Patient Demographics</div>
+                    <div class="card-body">
+                        <div class="form-group col-6">
+                            <label>Patient Full Name</label>
+                            <input type="text" id="in-pat-name">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Age</label>
+                            <input type="text" id="in-pat-age">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Gender</label>
+                            <select id="in-pat-gender">
+                                <option>Select...</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Blood Group</label>
+                            <select id="in-pat-blood">
+                                <option>Unknown</option><option>A+</option><option>A-</option>
+                                <option>B+</option><option>B-</option><option>AB+</option>
+                                <option>AB-</option><option>O+</option><option>O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-3">
+                            <label>UHID / Patient ID</label>
+                            <input type="text" id="in-pat-id">
+                        </div>
+                        <div class="form-group col-3">
+                            <label>Contact Number</label>
+                            <input type="text" id="in-pat-phone">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Residential Address</label>
+                            <input type="text" id="in-pat-address">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLINICAL VITALS -->
+                <div class="form-card">
+                    <div class="card-header">3. Vitals on Transfer</div>
+                    <div class="card-body">
+                        <div class="form-group col-2">
+                            <label>Pulse (bpm)</label>
+                            <input type="text" id="in-vit-hr">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>BP (mmHg)</label>
+                            <input type="text" id="in-vit-bp" placeholder="e.g. 120/80">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>SpO2 (%)</label>
+                            <input type="text" id="in-vit-spo2">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Resp Rate (/min)</label>
+                            <input type="text" id="in-vit-rr">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>Temp (°F/°C)</label>
+                            <input type="text" id="in-vit-temp">
+                        </div>
+                        <div class="form-group col-2">
+                            <label>CBG (mg/dL)</label>
+                            <input type="text" id="in-vit-cbg">
+                        </div>
+                        
+                        <div class="form-group col-12">
+                            <label>Glasgow Coma Scale (GCS)</label>
+                            <div class="gcs-grid">
+                                <select id="in-gcs-e">
+                                    <option value="4">Eye: 4 (Spontaneous)</option>
+                                    <option value="3">Eye: 3 (To Speech)</option>
+                                    <option value="2">Eye: 2 (To Pain)</option>
+                                    <option value="1">Eye: 1 (None)</option>
+                                </select>
+                                <select id="in-gcs-v">
+                                    <option value="5">Verbal: 5 (Oriented)</option>
+                                    <option value="4">Verbal: 4 (Confused)</option>
+                                    <option value="3">Verbal: 3 (Inappropriate words)</option>
+                                    <option value="2">Verbal: 2 (Incomprehensible sounds)</option>
+                                    <option value="1">Verbal: 1 (None)</option>
+                                </select>
+                                <select id="in-gcs-m">
+                                    <option value="6">Motor: 6 (Obeys commands)</option>
+                                    <option value="5">Motor: 5 (Localizes pain)</option>
+                                    <option value="4">Motor: 4 (Withdraws to pain)</option>
+                                    <option value="3">Motor: 3 (Flexion/Decorticate)</option>
+                                    <option value="2">Motor: 2 (Extension/Decerebrate)</option>
+                                    <option value="1">Motor: 1 (None)</option>
+                                </select>
+                                <div style="font-weight:bold; color:var(--ui-primary);">
+                                    Total: <span id="gcs-total">15</span>/15
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLINICAL SUMMARY -->
+                <div class="form-card">
+                    <div class="card-header">4. Clinical Summary</div>
+                    <div class="card-body">
+                        <div class="form-group col-6">
+                            <label>Known Allergies</label>
+                            <input type="text" id="in-allergies" placeholder="e.g., Penicillin, Sulfa" style="border-color:var(--ui-danger); color:var(--ui-danger); font-weight:bold;">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Comorbidities (Past Medical History)</label>
+                            <input type="text" id="in-pmh" placeholder="HTN, T2DM, CKD, etc.">
+                        </div>
+                        <div class="form-group col-12">
+                            <label>Chief Complaints & History of Present Illness (HPI)</label>
+                            <textarea id="in-hpi"></textarea>
+                        </div>
+                        <div class="form-group col-12">
+                            <label>Systemic Examination Findings</label>
+                            <textarea id="in-exam" placeholder="CVS, RS, PA, CNS findings..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INVESTIGATIONS & TREATMENT -->
+                <div class="form-card">
+                    <div class="card-header">5. Diagnostics & Management</div>
+                    <div class="card-body">
+                        <div class="form-group col-6">
+                            <label>Investigations Done / Reports Attached</label>
+                            <textarea id="in-invest" placeholder="Lab results, X-Ray, ECG, CT findings..."></textarea>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Treatment Given Prior to Transfer</label>
+                            <textarea id="in-treatment" placeholder="Medications, IV Fluids, Intubation, CPR..."></textarea>
+                        </div>
+                        <div class="form-group col-12">
+                            <label>Provisional Diagnosis</label>
+                            <input type="text" id="in-diagnosis" style="font-weight:600;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANSFER DETAILS -->
+                <div class="form-card">
+                    <div class="card-header">6. Transfer Destination & Justification</div>
+                    <div class="card-body">
+                        <div class="form-group col-6">
+                            <label>Receiving Hospital / Institution</label>
+                            <input type="text" id="in-recv-hosp">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Target Department / Consultant</label>
+                            <input type="text" id="in-recv-dept">
+                        </div>
+                        <div class="form-group col-12">
+                            <label>Purpose of Transfer</label>
+                            <textarea id="in-purpose" placeholder="e.g., Need for neurosurgical intervention, unavailable at this facility..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="height: 50px;"></div> <!-- Spacer -->
+            </form>
+        </main>
     </div>
-</div>
 
-<!-- I. REFERRAL IDENTIFICATION -->
-<div class="section">
-<div class="section-title">I. Referral Identification</div>
-<table class="table">
-<tr><th>Date</th><td><input type="date"></td><th>Time</th><td><input type="time"></td></tr>
-<tr><th>Referral Number</th><td colspan="3"><input id="refNo"></td></tr>
-<tr><th>Urgency</th><td colspan="3">
-<span class="checkbox">☐ Routine</span><span class="checkbox">☐ Urgent</span><span class="checkbox">☐ Emergency</span>
-</td></tr>
-</table>
-</div>
 
-<!-- II. REFERRING AUTHORITY -->
-<div class="section">
-<div class="section-title">II. Referring Medical Authority</div>
-<table class="table">
-<tr><th>Doctor Name</th><td colspan="3"><input></td></tr>
-<tr><th>Qualification</th><td><input></td><th>Registration No.</th><td><input></td></tr>
-<tr><th>Institution / Clinic</th><td colspan="3"><input></td></tr>
-<tr><th>Department</th><td><input></td><th>Contact</th><td><input></td></tr>
-</table>
-</div>
+    <!-- ==========================================================================
+         DOCUMENT PREVIEW & PRINT ENGINE (HIDDEN UNTIL TRIGGERED)
+         ========================================================================== -->
+    <div id="document-preview">
+        
+        <div class="preview-controls">
+            <button class="btn btn-outline" onclick="closeDocument()">Back to Editor</button>
+            <button class="btn btn-success" onclick="window.print()">Print Document / Save PDF</button>
+        </div>
 
-<!-- III. RECEIVING HOSPITAL -->
-<div class="section">
-<div class="section-title">III. Receiving Hospital / Specialist</div>
-<table class="table">
-<tr><th>Hospital / Medical College Name</th><td colspan="3"><input></td></tr>
-<tr><th>Department / Specialty</th><td><input></td><th>Consultant (if known)</th><td><input></td></tr>
-<tr><th>Hospital Address</th><td colspan="3"><input></td></tr>
-<tr><th>Referral Desk Contact</th><td colspan="3"><input></td></tr>
-</table>
-</div>
+        <div class="a4-page">
+            
+            <!-- HEADER -->
+            <div class="doc-header">
+                <div class="doc-logo-area">
+                    <img id="out-logo" src="" alt="">
+                </div>
+                <div class="doc-title-area">
+                    <h1 id="out-hosp-name">HOSPITAL NAME</h1>
+                    <h2 id="out-hosp-address">Hospital Address</h2>
+                    <div style="margin-top:8px;">
+                        <span class="doc-meta">INTER-HOSPITAL PATIENT TRANSFER RECORD</span>
+                        <span class="doc-meta" style="margin-left:5px;">CONFIDENTIAL MEDICAL DOCUMENT</span>
+                    </div>
+                </div>
+            </div>
 
-<!-- IV. PATIENT DETAILS -->
-<div class="section">
-<div class="section-title">IV. Patient Identification</div>
-<table class="table">
-<tr><th>Patient Name</th><td colspan="3"><input></td></tr>
-<tr><th>Age</th><td><input></td><th>Sex</th><td><input></td></tr>
-<tr><th>UHID / ID</th><td><input></td><th>Mobile</th><td><input></td></tr>
-<tr><th>Address</th><td colspan="3"><input></td></tr>
-</table>
-</div>
+            <!-- SECTION I: IDENTIFICATION -->
+            <div class="doc-section">
+                <h3 class="doc-section-title">I. Referral Identification</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Date of Transfer</th><td id="out-date" class="val-span"></td>
+                        <th>Time</th><td id="out-time" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Referral Number</th><td id="out-ref-no" class="val-span" style="font-weight:bold;"></td>
+                        <th>Urgency Status</th><td id="out-urgency" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Referring Doctor</th><td id="out-doc-name" class="val-span"></td>
+                        <th>Registration No.</th><td id="out-doc-reg" class="val-span"></td>
+                    </tr>
+                </table>
+            </div>
 
-<!-- V. CLINICAL SUMMARY -->
-<div class="section">
-<div class="section-title">V. Clinical Summary</div>
-<table class="table">
-<tr><th>Chief Complaints</th><td><textarea class="long"></textarea></td></tr>
-<tr><th>History of Present Illness</th><td><textarea class="long"></textarea></td></tr>
-</table>
-</div>
+            <!-- SECTION II: PATIENT DEMOGRAPHICS -->
+            <div class="doc-section">
+                <h3 class="doc-section-title">II. Patient Identification</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Patient Name</th><td colspan="3" id="out-pat-name" class="val-span" style="font-weight:bold; font-size:14px;"></td>
+                    </tr>
+                    <tr>
+                        <th>Age / Gender</th><td id="out-pat-age-gender" class="val-span"></td>
+                        <th>Blood Group</th><td id="out-pat-blood" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>UHID / ID</th><td id="out-pat-id" class="val-span"></td>
+                        <th>Contact No.</th><td id="out-pat-phone" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Address</th><td colspan="3" id="out-pat-address" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Known Allergies</th><td colspan="3" id="out-allergies" class="val-span" style="color:red; font-weight:bold;"></td>
+                    </tr>
+                </table>
+            </div>
 
-<!-- VI. EXAMINATION -->
-<div class="section">
-<div class="section-title">VI. Examination & Vitals</div>
-<table class="table">
-<tr><th>Pulse</th><td><input></td><th>BP</th><td><input></td><th>SpO₂</th><td><input></td></tr>
-<tr><th>Systemic Examination</th><td colspan="5"><textarea class="long"></textarea></td></tr>
-</table>
-</div>
+            <!-- SECTION III: CLINICAL SUMMARY -->
+            <div class="doc-section">
+                <h3 class="doc-section-title">III. Clinical Status & Examination</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Comorbidities</th><td colspan="5" id="out-pmh" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Chief Complaints & HPI</th><td colspan="5" id="out-hpi" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">Vitals on Transfer</th>
+                        <td style="width:16%;"><b>Pulse:</b> <span id="out-vit-hr"></span></td>
+                        <td style="width:16%;"><b>BP:</b> <span id="out-vit-bp"></span></td>
+                        <td style="width:16%;"><b>SpO2:</b> <span id="out-vit-spo2"></span></td>
+                        <td style="width:16%;"><b>RR:</b> <span id="out-vit-rr"></span></td>
+                        <td style="width:16%;"><b>Temp:</b> <span id="out-vit-temp"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><b>GCS Score:</b> E<span id="out-gcs-e"></span> V<span id="out-gcs-v"></span> M<span id="out-gcs-m"></span> (Total: <span id="out-gcs-t"></span>/15)</td>
+                        <td colspan="2"><b>CBG:</b> <span id="out-vit-cbg"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Systemic Exam</th><td colspan="5" id="out-exam" class="val-span"></td>
+                    </tr>
+                </table>
+            </div>
 
-<!-- VII. INVESTIGATIONS -->
-<div class="section">
-<div class="section-title">VII. Investigations & Reports</div>
-<table class="table">
-<tr><td><textarea class="long"></textarea></td></tr>
-</table>
-</div>
+            <!-- SECTION IV: INTERVENTIONS & DIAGNOSIS -->
+            <div class="doc-section">
+                <h3 class="doc-section-title">IV. Diagnostics & Management</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Investigations Done</th><td id="out-invest" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Treatment Given</th><td id="out-treatment" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Provisional Diagnosis</th><td id="out-diagnosis" class="val-span" style="font-weight:bold;"></td>
+                    </tr>
+                </table>
+            </div>
 
-<!-- VIII. DIAGNOSIS -->
-<div class="section">
-<div class="section-title">VIII. Provisional Diagnosis</div>
-<table class="table"><tr><td><textarea class="long"></textarea></td></tr></table>
-</div>
+            <!-- SECTION V: TRANSFER DETAILS -->
+            <div class="doc-section">
+                <h3 class="doc-section-title">V. Transfer Destination</h3>
+                <table class="doc-table">
+                    <tr>
+                        <th>Target Hospital</th><td id="out-recv-hosp" class="val-span"></td>
+                        <th>Target Dept</th><td id="out-recv-dept" class="val-span"></td>
+                    </tr>
+                    <tr>
+                        <th>Purpose of Transfer</th><td colspan="3" id="out-purpose" class="val-span"></td>
+                    </tr>
+                </table>
+            </div>
 
-<!-- IX. PURPOSE -->
-<div class="section">
-<div class="section-title">IX. Purpose of Referral</div>
-<table class="table">
-<tr><td>
-☐ Specialist Opinion ☐ Advanced Investigation ☐ Surgical Care ☐ ICU / Emergency ☐ Continuation of Care
-</td></tr>
-<tr><th>Specific Request</th><td><textarea class="long"></textarea></td></tr>
-</table>
-</div>
+            <!-- DECLARATION & SIGNATURES -->
+            <div class="doc-section" style="margin-top:20px;">
+                <p style="font-size:11px; text-align:justify; line-height:1.4;">
+                    <strong>Declaration:</strong> I certify that the clinical information provided above is accurate to the best of my knowledge based on available records. The patient and/or legally authorized representatives have been informed regarding the clinical condition, the necessity of this transfer, and the potential risks involved during transit. Standard handover protocols have been initiated.
+                </p>
+                <div class="doc-signatures">
+                    <div class="sig-block">
+                        <div class="sig-line">Signature of Patient / Attendant</div>
+                    </div>
+                    <div class="sig-block">
+                        <div class="sig-line" id="out-sig-doc">Signature & Stamp of Referring Doctor</div>
+                    </div>
+                </div>
+            </div>
 
-<!-- X. DECLARATION -->
-<div class="section">
-<div class="section-title">X. Declaration</div>
-<p style="font-size:13px;">I certify that the above information is accurate and the patient / attendant has been informed regarding this inter-hospital referral.</p>
-<div class="signature-row">
-<div class="signature-box"><div class="signature-line">Referring Doctor Signature</div></div>
-<div class="signature-box"><div class="signature-line">Date & Official Stamp</div></div>
-</div>
-</div>
+            <div class="doc-footer">
+                Official Medico-Legal Document • Generated securely via Enterprise Clinical System • Page 1 of 1
+            </div>
+        </div>
+    </div>
 
-<!-- XI. RECEIVING NOTES -->
-<div class="section">
-<div class="section-title">XI. Receiving Hospital Use Only</div>
-<table class="table">
-<tr><th>Date & Time Received</th><td><input></td></tr>
-<tr><th>Receiving Doctor / Unit</th><td><input></td></tr>
-<tr><th>Assessment & Plan</th><td><textarea class="long"></textarea></td></tr>
-</table>
-</div>
+    <!-- ==========================================================================
+         JAVASCRIPT LOGIC
+         ========================================================================== -->
+    <script>
+        // 1. Initial Setup: Set Today's Date and Time
+        window.onload = () => {
+            const now = new Date();
+            document.getElementById('in-date').value = now.toISOString().split('T')[0];
+            document.getElementById('in-time').value = now.toTimeString().substring(0,5);
+        };
 
-<div class="footer">
-Official confidential medical document • Valid for medico-legal & audit purposes
-</div>
+        // 2. GCS Calculator Logic
+        const gcsSelects = ['in-gcs-e', 'in-gcs-v', 'in-gcs-m'];
+        gcsSelects.forEach(id => {
+            document.getElementById(id).addEventListener('change', calculateGCS);
+        });
 
-</div>
+        function calculateGCS() {
+            const e = parseInt(document.getElementById('in-gcs-e').value) || 0;
+            const v = parseInt(document.getElementById('in-gcs-v').value) || 0;
+            const m = parseInt(document.getElementById('in-gcs-m').value) || 0;
+            document.getElementById('gcs-total').innerText = e + v + m;
+        }
 
-<script>
-function generateReferral(){
-    const d=new Date();
-    const ref=`FIT-${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
-    document.getElementById('refNo').value=ref;
-}
-</script>
+        // 3. Logo Upload Handler
+        let currentLogoData = '';
+        document.getElementById('logo-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentLogoData = event.target.result;
+                    document.getElementById('ui-logo-preview').src = currentLogoData;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 4. Generate Random Referral Number
+        function generateRefNo() {
+            const d = new Date();
+            const dateStr = d.getFullYear().toString() + (d.getMonth()+1).toString().padStart(2,'0') + d.getDate().toString().padStart(2,'0');
+            const random = Math.floor(1000 + Math.random() * 9000);
+            
+            // Get prefix from hospital name, default to 'REF'
+            let hosp = document.getElementById('ui-hosp-name').value.trim();
+            let prefix = "REF";
+            if(hosp.length > 0) {
+                let words = hosp.split(' ');
+                if(words.length > 1) {
+                    prefix = words[0][0] + (words[1][0] || '');
+                } else {
+                    prefix = hosp.substring(0,3);
+                }
+            }
+            document.getElementById('in-ref-no').value = `${prefix.toUpperCase()}-${dateStr}-${random}`;
+        }
+
+        // 5. Build the Document (Map UI inputs to Print Layout)
+        function buildDocument() {
+            // Helper function to safely get value and handle empty states
+            const getVal = (id, suffix='') => {
+                const val = document.getElementById(id).value.trim();
+                return val ? val + suffix : '<span class="empty-val">N/A</span>';
+            };
+
+            // Map System Settings
+            document.getElementById('out-hosp-name').innerText = document.getElementById('ui-hosp-name').value || 'HOSPITAL NAME';
+            document.getElementById('out-hosp-address').innerText = document.getElementById('ui-hosp-address').value || 'Hospital Address';
+            
+            if(currentLogoData) {
+                document.getElementById('out-logo').src = currentLogoData;
+                document.getElementById('out-logo').style.display = 'block';
+            } else {
+                document.getElementById('out-logo').style.display = 'none';
+            }
+
+            // Map Section I
+            document.getElementById('out-ref-no').innerHTML = getVal('in-ref-no');
+            document.getElementById('out-date').innerHTML = getVal('in-date');
+            document.getElementById('out-time').innerHTML = getVal('in-time');
+            document.getElementById('out-urgency').innerHTML = getVal('in-urgency');
+            
+            const docName = document.getElementById('ui-doc-name').value;
+            document.getElementById('out-doc-name').innerHTML = docName || '<span class="empty-val">N/A</span>';
+            document.getElementById('out-doc-reg').innerHTML = getVal('ui-doc-reg');
+            document.getElementById('out-sig-doc').innerText = docName ? `Signature & Stamp: ${docName}` : 'Signature & Stamp of Referring Doctor';
+
+            // Map Section II
+            document.getElementById('out-pat-name').innerHTML = getVal('in-pat-name');
+            let age = document.getElementById('in-pat-age').value.trim();
+            let gender = document.getElementById('in-pat-gender').value;
+            let ageGenderStr = "";
+            if(age) ageGenderStr += age;
+            if(gender !== 'Select...') ageGenderStr += (age ? " / " : "") + gender;
+            document.getElementById('out-pat-age-gender').innerHTML = ageGenderStr || '<span class="empty-val">N/A</span>';
+            
+            document.getElementById('out-pat-blood').innerHTML = getVal('in-pat-blood');
+            document.getElementById('out-pat-id').innerHTML = getVal('in-pat-id');
+            document.getElementById('out-pat-phone').innerHTML = getVal('in-pat-phone');
+            document.getElementById('out-pat-address').innerHTML = getVal('in-pat-address');
+            document.getElementById('out-allergies').innerHTML = getVal('in-allergies');
+
+            // Map Section III
+            document.getElementById('out-pmh').innerHTML = getVal('in-pmh');
+            document.getElementById('out-hpi').innerHTML = getVal('in-hpi');
+            
+            document.getElementById('out-vit-hr').innerHTML = getVal('in-vit-hr');
+            document.getElementById('out-vit-bp').innerHTML = getVal('in-vit-bp');
+            document.getElementById('out-vit-spo2').innerHTML = getVal('in-vit-spo2', '%');
+            document.getElementById('out-vit-rr').innerHTML = getVal('in-vit-rr');
+            document.getElementById('out-vit-temp').innerHTML = getVal('in-vit-temp');
+            document.getElementById('out-vit-cbg').innerHTML = getVal('in-vit-cbg');
+
+            document.getElementById('out-gcs-e').innerHTML = document.getElementById('in-gcs-e').value;
+            document.getElementById('out-gcs-v').innerHTML = document.getElementById('in-gcs-v').value;
+            document.getElementById('out-gcs-m').innerHTML = document.getElementById('in-gcs-m').value;
+            document.getElementById('out-gcs-t').innerHTML = document.getElementById('gcs-total').innerText;
+            
+            document.getElementById('out-exam').innerHTML = getVal('in-exam');
+
+            // Map Section IV
+            document.getElementById('out-invest').innerHTML = getVal('in-invest');
+            document.getElementById('out-treatment').innerHTML = getVal('in-treatment');
+            document.getElementById('out-diagnosis').innerHTML = getVal('in-diagnosis');
+
+            // Map Section V
+            document.getElementById('out-recv-hosp').innerHTML = getVal('in-recv-hosp');
+            document.getElementById('out-recv-dept').innerHTML = getVal('in-recv-dept');
+            document.getElementById('out-purpose').innerHTML = getVal('in-purpose');
+
+            // Toggle Visibility
+            document.getElementById('app-interface').style.display = 'none';
+            document.getElementById('document-preview').style.display = 'flex';
+        }
+
+        // 6. Close Document Preview
+        function closeDocument() {
+            document.getElementById('document-preview').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'flex';
+        }
+    </script>
 
 </body>
 </html>
